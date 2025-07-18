@@ -24,10 +24,6 @@ router.post('/signup', async (req, res) => {
 
 // Login Routed
 router.post('/login', async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-res.setHeader("Access-Control-Allow-Credentials", "true");
-res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
