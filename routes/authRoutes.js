@@ -22,7 +22,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Login Route
+// Login Routed
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
