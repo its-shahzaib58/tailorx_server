@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: 'http://localhost:8080', // React URL
+    origin: process.env.REACT_URL, // React URL
     credentials: true
 }));
 app.use(session({
