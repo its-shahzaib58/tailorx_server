@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
   logoUrl:{type:String},
   address:{type:String},
   website:{type:String}
-});
+},
+{
+  timestamps: true // ➕ Automatically adds createdAt and updatedAt
+}
+);
 
 module.exports = mongoose.model('User', UserSchema);

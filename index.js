@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes'); // <-- Import your routes
 const profileRoutes = require('./routes/profileRoutes'); // <-- Import your routes
+const clientRoutes = require('./routes/clientRoutes'); // <-- Import your routes
 
 const app = express();
 app.use(express.json());
@@ -36,6 +37,9 @@ app.use('/auth', authRoutes); // All auth routes will be prefixed with /api
 
 // Use the profile routes 
 app.use('/user', profileRoutes);
+
+// Use the client routes 
+app.use('/client', clientRoutes);
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
