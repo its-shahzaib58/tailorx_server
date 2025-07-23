@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "tailorx-client-5o0abdzaz-its-shahzaib58s-projects.vercel.app",
+  origin: ["https://tailorx-client-5o0abdzaz-its-shahzaib58s-projects.vercel.app",'https://tailorx-client.vercel.app'],
   credentials: true,
 }));
 
