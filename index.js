@@ -14,10 +14,11 @@ const generalRoutes = require('./routes/generalRoutes'); // <-- Import your rout
 const app = express();
 app.use(express.json());
 
-app.use(cors({
-    origin: 'https://tailorx-client.vercel.app', // React URL
-    credentials: true
-}));
+const cors = Cors({
+  origin: 'https://tailorx-client.vercel.app',
+  credentials: true,
+  methods: ['GET', 'POST','PUT']
+});
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -27,7 +28,23 @@ app.use(session({
       sameSite: 'none'
     }
 }));
+// Run middleware
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, result => {
+      if (result instanceof Error) {
+        return reject(result)
+      }
+      return resolve(result)
+    })
+  });
+}
 
+export default async function handler(req, res) {
+  await runMiddleware(req, res, cors);
+  // your logic
+  res.json({ user: 'Shahzaib' });
+}
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('MongoDB connected'))
@@ -59,3 +76,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
