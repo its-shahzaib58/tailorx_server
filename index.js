@@ -15,8 +15,8 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://vercel.com/its-shahzaib58s-projects/tailorx-server/572U1K7sQaAFw6CusSxqNiyCjKj1', // Only allow this origin
-  credentials: true
+  origin: "*",
+  credentials: true,
 }));
 
 app.use(session({
