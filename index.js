@@ -22,7 +22,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Set secure: true in production with HTTPS
+    cookie: {
+      secure: true, // Vercel uses HTTPS
+      sameSite: 'none'
+    }
 }));
 
 // Connect to MongoDB
