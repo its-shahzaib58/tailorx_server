@@ -14,13 +14,13 @@ const generalRoutes = require('./routes/generalRoutes'); // <-- Import your rout
 const app = express();
 app.use(express.json());
 
-const corsOptions = {
-  origin: 'https://tailorx-client.vercel.app', // Your client's URL
-  credentials: true, // Allow credentials (cookies, auth headers)
-  optionsSuccessStatus: 200
-};
+// Enable CORS
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://tailorx-client.vercel.app');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
-app.use(cors(corsOptions));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
