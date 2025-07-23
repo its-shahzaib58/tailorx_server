@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: process.env.REACT_URL, // React URL
+    origin: 'https://tailorx-client.vercel.app', // React URL
     credentials: true
 }));
 app.use(session({
