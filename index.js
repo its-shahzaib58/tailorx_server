@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const cors = require('cors');
-const MongoStore = require('connect-mongo');
 
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
@@ -14,10 +13,10 @@ const generalRoutes = require('./routes/generalRoutes');
 
 const app = express();
 
-// ✅ Required for trusting proxy (important on Vercel/HTTPS)
+// ✅ For trusting Vercel proxy
 app.set('trust proxy', 1);
 
-// ✅ CORS Setup
+// ✅ Allow specific origins only
 const allowedOrigins = ['https://tailorx-client.vercel.app', 'http://localhost:8080'];
 
 app.use(cors({
@@ -28,39 +27,36 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
 }));
 
-// ✅ Session Setup with MongoStore (for Vercel)
+// ✅ Session setup (in-memory)
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   proxy: true,
   cookie: {
-    secure: true,          // Only over HTTPS
-    sameSite: 'none',      // Required for cross-site cookies
+    secure: true,         // required for HTTPS (Vercel)
+    sameSite: 'none',     // cross-origin cookie support
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-  },
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    collectionName: 'sessions'
-  })
+  }
 }));
 
 app.use(express.json());
 
-// ✅ MongoDB Connection
+// ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// ✅ Routes
+// ✅ Test route
 app.get('/', (req, res) => {
-  res.send('Hello from TailorX backend!');
+  res.send('TailorX backend running ✅');
 });
 
+// ✅ Mount routes
 app.use('/auth', authRoutes);
 app.use('/user', profileRoutes);
 app.use('/client', clientRoutes);
@@ -68,7 +64,7 @@ app.use('/order', orderRoutes);
 app.use('/msgtemp', messageTemplateRoutes);
 app.use('/general', generalRoutes);
 
-// ✅ Start Server
+// ✅ Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
