@@ -14,11 +14,19 @@ const generalRoutes = require('./routes/generalRoutes'); // <-- Import your rout
 const app = express();
 app.use(express.json());
 
-const cors = Cors({
-  origin: 'https://tailorx-client.vercel.app',
+const allowedOrigins = ['https://tailorx-client.vercel.app', 'http://localhost:8080'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST','PUT']
-});
+}));
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -29,22 +37,22 @@ app.use(session({
     }
 }));
 // Run middleware
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, result => {
-      if (result instanceof Error) {
-        return reject(result)
-      }
-      return resolve(result)
-    })
-  });
-}
+// function runMiddleware(req, res, fn) {
+//   return new Promise((resolve, reject) => {
+//     fn(req, res, result => {
+//       if (result instanceof Error) {
+//         return reject(result)
+//       }
+//       return resolve(result)
+//     })
+//   });
+// }
 
-export default async function handler(req, res) {
-  await runMiddleware(req, res, cors);
-  // your logic
-  res.json({ user: 'Shahzaib' });
-}
+// export default async function handler(req, res) {
+//   await runMiddleware(req, res, cors);
+//   // your logic
+//   res.json({ user: 'Shahzaib' });
+// }
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('MongoDB connected'))
