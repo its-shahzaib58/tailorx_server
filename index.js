@@ -14,7 +14,10 @@ const generalRoutes = require('./routes/generalRoutes'); // <-- Import your rout
 const app = express();
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://tailorx-client.vercel.app',
+  credentials: false
+}));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
