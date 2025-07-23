@@ -1,24 +1,22 @@
 {
-    "headers": [
-      {
-        "source": "/(.*)",
-        "dest":"/index.js",
-        "methods":["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          },
-          {
-            "key": "Access-Control-Allow-Credentials",
-            "value": "true"
-          },
-          {
-            "key": "Access-Control-Allow-Headers",
-            "value": "Origin, X-Requested-With, Content-Type, Accept"
-          }
-        ]
-      }
-    ]
-  }
-  
+  "headers": [
+    {
+      "source": "/auth/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://tailorx-client.vercel.app" },
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
+    },
+    {
+      "source": "/auth/me",
+      "methods": ["OPTIONS"],
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://tailorx-client.vercel.app" },
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
+    }
+  ]
+}
