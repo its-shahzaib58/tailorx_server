@@ -12,14 +12,13 @@ const messageTemplateRoutes = require('./routes/messageTemplateRoutes'); // <-- 
 const generalRoutes = require('./routes/generalRoutes'); // <-- Import your routes
 
 const app = express();
-app.use(express.json());
 
-// Enable CORS
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://tailorx-client.vercel.app');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  next();
-});
+const corsOptions = {
+  origin:"*",
+  credentials:true
+}
+
+app.use(cors(corsOptions));
 
 
 app.use(session({
@@ -31,6 +30,8 @@ app.use(session({
       sameSite: 'none'
     }
 }));
+
+app.use(express.json());
 // Run middleware
 // function runMiddleware(req, res, fn) {
 //   return new Promise((resolve, reject) => {
