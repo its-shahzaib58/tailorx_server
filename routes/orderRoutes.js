@@ -58,7 +58,15 @@ router.post("/add", async (req, res) => {
 
 router.get("/get", async (req, res) => {
   try {
-    const orders = await Order.find().populate("customerId", "name phone_no").sort({ createdAt: -1 }); // latest orders first
+    const userId = req.session.userId; // Or use req.user._id depending on your auth
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: User not logged in" });
+    }
+
+    const orders = await Order.find({ customerId: userId })
+      .populate("customerId", "name phone_no")
+      .sort({ createdAt: -1 }); // Latest orders first
 
     res.status(200).json({
       message: "Orders fetched successfully",
@@ -69,6 +77,7 @@ router.get("/get", async (req, res) => {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 });
+
 
 // GET single order by ID
 router.get("/get/:id", async (req, res) => {
