@@ -17,7 +17,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 // ✅ Allow specific origins only
-const allowedOrigins = ['https://tailorx-client.vercel.app', 'http://localhost:8080'];
+const allowedOrigins = ['https://tailorx-client.vercel.app', 'http://localhost:8080','https://tailorx-client-jcsc.vercel.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
