@@ -67,8 +67,8 @@ router.get("/get", async (req, res) => {
 
     // ✅ Step 1: Get the client/user
     const clients = await Client.find({ u_id: userId }).sort({ createdAt: -1 });
-    console.log(clients);
-    if (!client) {
+    // console.log(clients);
+    if (!clients) {
       return res.status(404).json({ message: "Client not found" });
     }
 
@@ -86,11 +86,7 @@ router.get("/get", async (req, res) => {
 
     res.status(200).json({
       message: "Orders fetched successfully",
-      client: {
-        _id: client._id,
-        name: client.name,
-        phone_no: client.phone_no,
-      },
+      
       orders,
     });
   } catch (error) {
