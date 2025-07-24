@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const Order = require("../models/Order");
+const Client = require('../models/Client');
 const Counter = require("../models/Counter");
 const router = express.Router();
 // Add client api
@@ -65,16 +66,19 @@ router.get("/get", async (req, res) => {
     }
 
     // ✅ Step 1: Get the client/user
-    const client = await Client.find({u_id:userId});
-    console.log(client)
+    const clients = await Client.find({ u_id: userId }).sort({ createdAt: -1 });
+    console.log(clients)
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
 
     // ✅ Step 2: Get the orders of that client
-    const orders = await Order.find({ customerId: client._id })
+    clients.map(async(client)=>{
+      const orders = await Order.find({ customerId: client._id })
       .populate("customerId", "name phone_no")
       .sort({ createdAt: -1 });
+    })
+
 
     res.status(200).json({
       message: "Orders fetched successfully",
