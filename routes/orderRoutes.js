@@ -58,18 +58,31 @@ router.post("/add", async (req, res) => {
 
 router.get("/get", async (req, res) => {
   try {
-    const userId = req.session.userId; // Or use req.user._id depending on your auth
+    const userId = req.session.userId;
 
     if (!userId) {
-      return res.status(401).json({ message: "Unauthorized: User not logged in" });
+      return res.status(401).json({ message: "Unauthorized: Please log in" });
     }
 
-    const orders = await Order.find({ customerId: userId })
+    // ✅ Step 1: Get the client/user
+    const client = await Client.findById(userId);
+
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    // ✅ Step 2: Get the orders of that client
+    const orders = await Order.find({ customerId: client._id })
       .populate("customerId", "name phone_no")
-      .sort({ createdAt: -1 }); // Latest orders first
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       message: "Orders fetched successfully",
+      client: {
+        _id: client._id,
+        name: client.name,
+        phone_no: client.phone_no,
+      },
       orders,
     });
   } catch (error) {

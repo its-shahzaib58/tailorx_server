@@ -36,10 +36,9 @@ router.post('/login', async (req, res) => {
 // Check session
 router.get('/me', (req, res) => {
   if (req.session.userId) {
-    res.json({ loggedIn: true });
-  } else {
-    res.json({ loggedIn: false });
+    return res.json({ loggedIn: true, userId: req.session.userId });
   }
+  return res.status(401).json({ loggedIn: false });
 });
 
 // Logout Route
