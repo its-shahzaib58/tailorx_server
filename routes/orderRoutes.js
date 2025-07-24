@@ -67,18 +67,22 @@ router.get("/get", async (req, res) => {
 
     // ✅ Step 1: Get the client/user
     const clients = await Client.find({ u_id: userId }).sort({ createdAt: -1 });
-    console.log(clients)
+    console.log(clients);
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
 
     // ✅ Step 2: Get the orders of that client
-    clients.map(async(client)=>{
-      const orders = await Order.find({ customerId: client._id })
+    const orders = await Promise.all(
+      clients.map(async(client)=>{
+      const getOrders = await Order.find({ customerId: client._id })
       .populate("customerId", "name phone_no")
       .sort({ createdAt: -1 });
+      return getOrders
     })
+  );
 
+  console.log(orders)
 
     res.status(200).json({
       message: "Orders fetched successfully",
