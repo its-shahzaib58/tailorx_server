@@ -73,20 +73,19 @@ router.get("/get", async (req, res) => {
     }
 
     // ✅ Step 2: Get the orders of that client
-    const orders = await Promise.all(
-      clients.map(async(client)=>{
-      const getOrders = await Order.find({ customerId: client._id })
-      .populate("customerId", "name phone_no")
-      .sort({ createdAt: -1 });
-      return getOrders
-    })
-  );
-
+    const orders = (
+      await Promise.all(
+        clients.map(async (client) => {
+          return await Order.find({ customerId: client._id })
+            .populate("customerId", "name phone_no")
+            .sort({ createdAt: -1 });
+        })
+      )
+    ).flat();
   console.log(orders)
 
     res.status(200).json({
       message: "Orders fetched successfully",
-      
       orders,
     });
   } catch (error) {
