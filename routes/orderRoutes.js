@@ -65,8 +65,8 @@ router.get("/get", async (req, res) => {
     }
 
     // ✅ Step 1: Get the client/user
-    const client = await Client.findById(userId);
-
+    const client = await Client.findById({u_id:userId});
+    console.log(client)
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
