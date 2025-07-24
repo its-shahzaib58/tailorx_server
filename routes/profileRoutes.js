@@ -5,16 +5,21 @@ const path = require("path");
 const fs = require("fs");
 const User = require("../models/User");
 const router = express.Router();
-// Setup multer storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "..", "uploads", "logos");
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'logos',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
   },
 });
 
@@ -28,11 +33,10 @@ router.post("/upload-logo", upload.single("logo"), async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const logoUrl = `/uploads/logos/${req.file.filename}`;
-    user.logoUrl = logoUrl;
+    user.logoUrl = req.file.path; // Cloudinary URL
     await user.save();
 
-    res.json({ message: "Logo uploaded successfully", logoUrl });
+    res.json({ message: "Logo uploaded successfully", logoUrl: req.file.path });
   } catch (error) {
     console.error("Logo upload error:", error);
     res.status(500).json({ message: "Server error" });
